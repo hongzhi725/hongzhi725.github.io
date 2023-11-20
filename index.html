@@ -34,12 +34,10 @@
   },
   copyright: undefined,
   lightbox: 'fancybox',
-  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-center"},
-  source: {
-    justifiedGallery: {
-      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
-      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
-    }
+  Snackbar: {"chs_to_cht":"你已切换为繁体中文","cht_to_chs":"你已切换为简体中文","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-center"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
   },
   isPhotoFigcaption: false,
   islazyload: false,
@@ -55,85 +53,78 @@
   isHome: true,
   isHighlightShrink: false,
   isToc: false,
-  postUpdate: '2023-08-15 16:26:08'
-}</script><noscript><style type="text/css">
-  #nav {
-    opacity: 1
-  }
-  .justified-gallery img {
-    opacity: 1
-  }
-
-  #recent-posts time,
-  #post-meta time {
-    display: inline !important
-  }
-</style></noscript><script>(win=>{
-    win.saveToLocal = {
-      set: function setWithExpiry(key, value, ttl) {
-        if (ttl === 0) return
-        const now = new Date()
-        const expiryDay = ttl * 86400000
-        const item = {
-          value: value,
-          expiry: now.getTime() + expiryDay,
+  postUpdate: '2023-11-20 14:57:55'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
         }
-        localStorage.setItem(key, JSON.stringify(item))
-      },
-
-      get: function getWithExpiry(key) {
-        const itemStr = localStorage.getItem(key)
-
-        if (!itemStr) {
-          return undefined
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
         }
-        const item = JSON.parse(itemStr)
-        const now = new Date()
 
-        if (now.getTime() > item.expiry) {
-          localStorage.removeItem(key)
-          return undefined
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
         }
-        return item.value
-      }
-    }
-  
-    win.getScript = url => new Promise((resolve, reject) => {
-      const script = document.createElement('script')
-      script.src = url
-      script.async = true
-      script.onerror = reject
-      script.onload = script.onreadystatechange = function() {
-        const loadState = this.readyState
-        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
-        script.onload = script.onreadystatechange = null
-        resolve()
-      }
-      document.head.appendChild(script)
-    })
-  
-    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
-      const link = document.createElement('link')
-      link.rel = 'stylesheet'
-      link.href = url
-      if (id) link.id = id
-      link.onerror = reject
-      link.onload = link.onreadystatechange = function() {
-        const loadState = this.readyState
-        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
-        link.onload = link.onreadystatechange = null
-        resolve()
-      }
-      document.head.appendChild(link)
-    })
-  
-      win.activateDarkMode = function () {
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
         document.documentElement.setAttribute('data-theme', 'dark')
         if (document.querySelector('meta[name="theme-color"]') !== null) {
           document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
         }
       }
-      win.activateLightMode = function () {
+      win.activateLightMode = () => {
         document.documentElement.setAttribute('data-theme', 'light')
         if (document.querySelector('meta[name="theme-color"]') !== null) {
           document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
@@ -141,9 +132,9 @@
       }
       const t = saveToLocal.get('theme')
     
-          if (t === 'dark') activateDarkMode()
-          else if (t === 'light') activateLightMode()
-        
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
       const asideStatus = saveToLocal.get('aside-status')
       if (asideStatus !== undefined) {
         if (asideStatus === 'hide') {
@@ -153,13 +144,57 @@
         }
       }
     
-    const detectApple = () => {
-      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
-        document.documentElement.classList.add('apple')
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
       }
-    }
-    detectApple()
-    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url('https://i.loli.net/2021/03/05/sZVijBAeCxFqDPl.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="深夜酒馆 | Night Bar"><span class="site-name">深夜酒馆 | Night Bar</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="site-info"><h1 id="site-title">深夜酒馆 | Night Bar</h1><div id="site-subtitle"><span id="subtitle"></span></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="post_cover left"><a href="/2023/05/17/CreateBlogLikeMe/" title="博客搭建：Hexo + Butterfly"><img class="post-bg" src="/images/CreateBlogLikeMe.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="博客搭建：Hexo + Butterfly"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/05/17/CreateBlogLikeMe/" title="博客搭建：Hexo + Butterfly">博客搭建：Hexo + Butterfly</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-05-17T02:24:19.000Z" title="发表于 2023-05-17 10:24:19">2023-05-17</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-18T06:58:15.460Z" title="更新于 2023-05-18 14:58:15">2023-05-18</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Blog/">Blog</a></span></div><div class="content">我的博客架构
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/images/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">25</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url('https://i.loli.net/2021/03/05/sZVijBAeCxFqDPl.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="深夜酒馆 | Night Bar"><span class="site-name">深夜酒馆 | Night Bar</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="site-info"><h1 id="site-title">深夜酒馆 | Night Bar</h1><div id="site-subtitle"><span id="subtitle"></span></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="post_cover left"><a href="/2023/11/08/studyNotes/back-end%20development/API/" title="API"><img class="post-bg" src="https://iph.href.lu/464x300?text=API&amp;fg=ffffff&amp;bg=165dff" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="API"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/11/08/studyNotes/back-end%20development/API/" title="API">API</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-08T09:18:29.000Z" title="发表于 2023-11-08 17:18:29">2023-11-08</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-09T00:34:48.569Z" title="更新于 2023-11-09 08:34:48">2023-11-09</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Study-Notes/">Study Notes</a></span></div><div class="content">定义应用程序编程接口（Application Programming Interface）
+接口标准RESTful定义REST（Representational State Transfer）表象化状态转变（表述性状态转变），在2000年被提出，基于HTTP、URI、XML、JSON等标准和协议，支持轻量级、跨平台、跨语言的架构设计。是Web服务的一种新的架构风格（一种思想）。
+主要原则
+对网络上所有的资源都有一个资源标志符。
+对资源的操作不会改变标识符。
+同一资源有多种表现形式（xml、json）
+所有操作都是无状态的（Stateless）
+符合上述REST原则的架构方式称为RESTful
+
+REST资源操作
+
+
+http方法
+资源操作
+幂等
+安全
+
+
+
+GET
+SELECT
+是
+是
+
+
+POST
+INSERT
+否
+否
+
+
+PUT
+UPDATE
+是
+否
+
+
+DELETE
+DELETE
+是
+否
+
+
+RESTful中根据操作资源的不同，使用不同的http方法，其传输的媒介一般使用json。
+</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2023/05/17/CreateBlogLikeMe/" title="博客搭建：Hexo + Butterfly"><img class="post-bg" src="/images/CreateBlogLikeMe.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="博客搭建：Hexo + Butterfly"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/05/17/CreateBlogLikeMe/" title="博客搭建：Hexo + Butterfly">博客搭建：Hexo + Butterfly</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-05-17T02:24:19.000Z" title="发表于 2023-05-17 10:24:19">2023-05-17</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-18T06:58:15.460Z" title="更新于 2023-05-18 14:58:15">2023-05-18</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Blog/">Blog</a></span></div><div class="content">我的博客架构
   flowchart LR
 A(Blog) ---- B(Frame) -..- D(Hexo)
 A ---- C(Theme) -..- E(Butterfly)
@@ -177,7 +212,7 @@ or
 一键部署Hexo 提供了快速方便的一键部署功能，让您只需一条命令就能将网站部署到服务器上。
 1hexo deploy
 
-在开始之前，您必须先在 _config.yml 中 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2023/04/27/Switch-Emulator/" title="Switch Emulator"><img class="post-bg" src="https://s1.ax1x.com/2023/04/27/p9M4cIx.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Switch Emulator"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/04/27/Switch-Emulator/" title="Switch Emulator">Switch Emulator</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-04-27T02:09:24.000Z" title="发表于 2023-04-27 10:09:24">2023-04-27</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-27T02:55:07.540Z" title="更新于 2023-04-27 10:55:07">2023-04-27</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Games/">Games</a></span></div><div class="content">序言这几天挺想买个新电脑的，但是一直在思考被替换的这台GTX1080电脑还能做些什么(OS：总不能在家吃灰吧！)，突然眼前一亮，发现可以把这台电脑用作游戏机模拟器的主机，以后直接HDMI+电视就可以完美:smiley:再干十年了。
+在开始之前，您必须先在 _config.yml 中 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2023/04/27/Switch-Emulator/" title="Switch Emulator"><img class="post-bg" src="https://s1.ax1x.com/2023/04/27/p9M4cIx.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Switch Emulator"></a></div><div class="recent-post-info"><a class="article-title" href="/2023/04/27/Switch-Emulator/" title="Switch Emulator">Switch Emulator</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-04-27T02:09:24.000Z" title="发表于 2023-04-27 10:09:24">2023-04-27</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-27T02:55:07.540Z" title="更新于 2023-04-27 10:55:07">2023-04-27</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Games/">Games</a></span></div><div class="content">序言这几天挺想买个新电脑的，但是一直在思考被替换的这台GTX1080电脑还能做些什么(OS：总不能在家吃灰吧！)，突然眼前一亮，发现可以把这台电脑用作游戏机模拟器的主机，以后直接HDMI+电视就可以完美:smiley:再干十年了。
 开门
 模拟器
 
@@ -187,7 +222,7 @@ Firmware
 
 
 
-</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2022/11/28/SurfTheInternet/" title="科学上网：X-UI面板"><img class="post-bg" src="https://s1.ax1x.com/2022/11/28/zalQMt.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="科学上网：X-UI面板"></a></div><div class="recent-post-info"><a class="article-title" href="/2022/11/28/SurfTheInternet/" title="科学上网：X-UI面板">科学上网：X-UI面板</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-28T03:25:09.000Z" title="发表于 2022-11-28 11:25:09">2022-11-28</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-06-03T05:45:21.249Z" title="更新于 2023-06-03 13:45:21">2023-06-03</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%A7%91%E5%AD%A6/">科学</a></span></div><div class="content">X-UI搭建代理服务的优点
+</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2022/11/28/SurfTheInternet/" title="科学上网：X-UI面板"><img class="post-bg" src="https://s1.ax1x.com/2022/11/28/zalQMt.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="科学上网：X-UI面板"></a></div><div class="recent-post-info"><a class="article-title" href="/2022/11/28/SurfTheInternet/" title="科学上网：X-UI面板">科学上网：X-UI面板</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-28T03:25:09.000Z" title="发表于 2022-11-28 11:25:09">2022-11-28</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-06-03T05:45:21.249Z" title="更新于 2023-06-03 13:45:21">2023-06-03</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%A7%91%E5%AD%A6/">科学</a></span></div><div class="content">X-UI搭建代理服务的优点
 支持系统状态监控：如CPU、内存、硬盘等状态
 支持多用户多协议，网页可视化操作
 支持流量统计
@@ -212,7 +247,7 @@ macOS版下载地址: http://www.hostbuf.com/downloads/finalshell_install.pkg
 根据系统环境选择安装命令：
 
 Debian&#x2F;Ubuntu系统执行以下命令：
-1apt update -y &amp;&amp; apt install -y curl &amp;&amp ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2022/10/21/ToBDesign/" title="B端产品设计必看"><img class="post-bg" src="/images/ToBDesign/logo.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="B端产品设计必看"></a></div><div class="recent-post-info"><a class="article-title" href="/2022/10/21/ToBDesign/" title="B端产品设计必看">B端产品设计必看</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-10-21T05:42:08.000Z" title="发表于 2022-10-21 13:42:08">2022-10-21</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-10-24T01:06:05.746Z" title="更新于 2022-10-24 09:06:05">2022-10-24</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E4%BA%A7%E5%93%81/">产品</a></span></div><div class="content">「查询列表」与「表单」众所周知，在B端产品中，「查询列表」和「表单」是非常常见的业务兄弟，一般每个B端业务，都会出现该业务场景下的表单录入和数据列表展示需求，因此，「查询列表」和「表单」是B端业务系统中常见的业务页面。下面，我们以「Arco Design」和「Ant Design」的页面为基准来分析B端产品设计常见思路。
+1apt update -y &amp;&amp; apt install -y curl &amp;&amp ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2022/10/21/ToBDesign/" title="B端产品设计必看"><img class="post-bg" src="/images/ToBDesign/logo.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="B端产品设计必看"></a></div><div class="recent-post-info"><a class="article-title" href="/2022/10/21/ToBDesign/" title="B端产品设计必看">B端产品设计必看</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-10-21T05:42:08.000Z" title="发表于 2022-10-21 13:42:08">2022-10-21</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-10-24T01:06:05.746Z" title="更新于 2022-10-24 09:06:05">2022-10-24</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E4%BA%A7%E5%93%81/">产品</a></span></div><div class="content">「查询列表」与「表单」众所周知，在B端产品中，「查询列表」和「表单」是非常常见的业务兄弟，一般每个B端业务，都会出现该业务场景下的表单录入和数据列表展示需求，因此，「查询列表」和「表单」是B端业务系统中常见的业务页面。下面，我们以「Arco Design」和「Ant Design」的页面为基准来分析B端产品设计常见思路。
 「查询列表」「Arco Design」表格使用路径
 「Ant Design」表格使用路径
 F型视觉动线布局可以看出，Arco和Ant的表格设计使用路径均符合F型视觉动线布局，在复杂页面信息处理中和B端产品中，这种表格的设计方式已经符合用户的操作习惯，用户的学习成本和理解成本较低。
@@ -220,7 +255,7 @@ F型视觉动线布局可以看出，Arco和Ant的表格设计使用路径均符
 在2006年时候，尼尔森诺曼发表了一篇人们如何扫描和阅读网站习惯的分享，他们通过研究发现，用户倾向于一种F模式去查看网站。F模式，能很好地帮我们创建好的视觉层次结构设计，因为这是人们可以轻松扫描设计一种布局，它能让大多数用户感到舒适，因为我们用户一直从上到到下，从左到右阅读。
 
 「表单」表单用于业务系统向用户收集和验证信息，表单中每个子项的结构为：「Label、Input、Button」
- ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2022/10/20/Activatetheoffice/" title="「工具」软路由+KMS激活Windows+Microsoft Office"><img class="post-bg" src="https://s1.ax1x.com/2022/10/20/xyj4eO.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="「工具」软路由+KMS激活Windows+Microsoft Office"></a></div><div class="recent-post-info"><a class="article-title" href="/2022/10/20/Activatetheoffice/" title="「工具」软路由+KMS激活Windows+Microsoft Office">「工具」软路由+KMS激活Windows+Microsoft Office</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-10-20T07:17:56.000Z" title="发表于 2022-10-20 15:17:56">2022-10-20</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-10-20T09:13:02.754Z" title="更新于 2022-10-20 17:13:02">2022-10-20</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%A7%91%E5%AD%A6/">科学</a></span></div><div class="content">软路由（iStoreOS）打开KMS
+ ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2022/10/20/Activatetheoffice/" title="「工具」软路由+KMS激活Windows+Microsoft Office"><img class="post-bg" src="https://s1.ax1x.com/2022/10/20/xyj4eO.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="「工具」软路由+KMS激活Windows+Microsoft Office"></a></div><div class="recent-post-info"><a class="article-title" href="/2022/10/20/Activatetheoffice/" title="「工具」软路由+KMS激活Windows+Microsoft Office">「工具」软路由+KMS激活Windows+Microsoft Office</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-10-20T07:17:56.000Z" title="发表于 2022-10-20 15:17:56">2022-10-20</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-10-20T09:13:02.754Z" title="更新于 2022-10-20 17:13:02">2022-10-20</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%A7%91%E5%AD%A6/">科学</a></span></div><div class="content">软路由（iStoreOS）打开KMS
 终端操作
 Windows 激活命令（终端）：
 
@@ -235,7 +270,7 @@ Microsoft Office KMS 激活命令（终端）：
 
 Attention：Microsoft Office必须安装的是VOL版。
 写在最后希望可以用点滴，记录岁月的痕迹~
-</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2021/08/11/game-roadmap/" title="游戏创作RoadMap"><img class="post-bg" src="https://s3.bmp.ovh/imgs/2021/08/bb38f77d12f38955.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="游戏创作RoadMap"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/08/11/game-roadmap/" title="游戏创作RoadMap">游戏创作RoadMap</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-08-11T02:01:25.000Z" title="发表于 2021-08-11 10:01:25">2021-08-11</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-08-11T02:27:56.942Z" title="更新于 2021-08-11 10:27:56">2021-08-11</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%B8%B8%E6%88%8F/">游戏</a></span></div><div class="content">游戏创作RoadMap
+</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2021/08/11/game-roadmap/" title="游戏创作RoadMap"><img class="post-bg" src="https://s3.bmp.ovh/imgs/2021/08/bb38f77d12f38955.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="游戏创作RoadMap"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/08/11/game-roadmap/" title="游戏创作RoadMap">游戏创作RoadMap</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-08-11T02:01:25.000Z" title="发表于 2021-08-11 10:01:25">2021-08-11</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-08-11T02:27:56.942Z" title="更新于 2021-08-11 10:27:56">2021-08-11</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%B8%B8%E6%88%8F/">游戏</a></span></div><div class="content">游戏创作RoadMap
 前言：一心想设计一款游戏，作为一生的传记，也作为一生的梦想。从此，一点一滴记录梦想的历程。
 
 技术框架
@@ -243,7 +278,7 @@ Attention：Microsoft Office必须安装的是VOL版。
 开发语言：Typescript
 美工软件：Aseprite、TiledMap
 
-未完待续</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2021/07/13/Axure%E4%B8%AD%E7%9A%84%E6%B5%81%E7%A8%8B%E5%9B%BE%E5%85%83%E4%BB%B6%E5%BA%93/" title="Axure中的流程图元件库"><img class="post-bg" src="https://z3.ax1x.com/2021/07/13/WAHUaT.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Axure中的流程图元件库"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/07/13/Axure%E4%B8%AD%E7%9A%84%E6%B5%81%E7%A8%8B%E5%9B%BE%E5%85%83%E4%BB%B6%E5%BA%93/" title="Axure中的流程图元件库">Axure中的流程图元件库</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-07-13T06:52:59.000Z" title="发表于 2021-07-13 14:52:59">2021-07-13</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-07-13T09:49:42.738Z" title="更新于 2021-07-13 17:49:42">2021-07-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E4%BA%A7%E5%93%81/">产品</a></span></div><div class="content">开门见山Axure中的流程图元件库比较简单，因此，出现了本次分享，个人整理了常用的流程图元件，生成了axure的流程图元件库，希望可以帮助到一同在学习的你我~
+未完待续</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2021/07/13/Axure%E4%B8%AD%E7%9A%84%E6%B5%81%E7%A8%8B%E5%9B%BE%E5%85%83%E4%BB%B6%E5%BA%93/" title="Axure中的流程图元件库"><img class="post-bg" src="https://z3.ax1x.com/2021/07/13/WAHUaT.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Axure中的流程图元件库"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/07/13/Axure%E4%B8%AD%E7%9A%84%E6%B5%81%E7%A8%8B%E5%9B%BE%E5%85%83%E4%BB%B6%E5%BA%93/" title="Axure中的流程图元件库">Axure中的流程图元件库</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-07-13T06:52:59.000Z" title="发表于 2021-07-13 14:52:59">2021-07-13</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-07-13T09:49:42.738Z" title="更新于 2021-07-13 17:49:42">2021-07-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E4%BA%A7%E5%93%81/">产品</a></span></div><div class="content">开门见山Axure中的流程图元件库比较简单，因此，出现了本次分享，个人整理了常用的流程图元件，生成了axure的流程图元件库，希望可以帮助到一同在学习的你我~
 Demo
 下载
 该元件适用于Axure9
@@ -253,15 +288,15 @@ Demo
 
 以上的流程图元件，可以满足我们大部分流程图的需求。希望可以帮助到大家，如有更好的想法，欢迎留言交流。
 关于我本人丰富，不能简介 ^_^
-</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2021/03/08/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%BB%BA%E5%8D%9A%E5%AE%A2/" title="从零开始建博客（Hexo+Butterfly）"><img class="post-bg" src="https://z3.ax1x.com/2021/07/13/WALeq1.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="从零开始建博客（Hexo+Butterfly）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/03/08/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%BB%BA%E5%8D%9A%E5%AE%A2/" title="从零开始建博客（Hexo+Butterfly）">从零开始建博客（Hexo+Butterfly）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-03-08T07:53:54.000Z" title="发表于 2021-03-08 15:53:54">2021-03-08</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-07-13T09:50:23.063Z" title="更新于 2021-07-13 17:50:23">2021-07-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Blog/">Blog</a></span></div><div class="content">前言：近来有些时间，总想丰富一下自己的博客空间，因此，从现在开始，我将把自己所学所掌握的知识，慢慢的都更新到博客上，供自己储备和开源给各位学习和指点，蟹蟹~✿✿ヽ(°▽°)ノ✿
-</div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Cookie</div><div class="author-info__description">请坐</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/hongzhi725"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Stay Hungry Stay Foolish</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/05/17/CreateBlogLikeMe/" title="博客搭建：Hexo + Butterfly"><img src="/images/CreateBlogLikeMe.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="博客搭建：Hexo + Butterfly"/></a><div class="content"><a class="title" href="/2023/05/17/CreateBlogLikeMe/" title="博客搭建：Hexo + Butterfly">博客搭建：Hexo + Butterfly</a><time datetime="2023-05-17T02:24:19.000Z" title="发表于 2023-05-17 10:24:19">2023-05-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/27/Switch-Emulator/" title="Switch Emulator"><img src="https://s1.ax1x.com/2023/04/27/p9M4cIx.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Switch Emulator"/></a><div class="content"><a class="title" href="/2023/04/27/Switch-Emulator/" title="Switch Emulator">Switch Emulator</a><time datetime="2023-04-27T02:09:24.000Z" title="发表于 2023-04-27 10:09:24">2023-04-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/11/28/SurfTheInternet/" title="科学上网：X-UI面板"><img src="https://s1.ax1x.com/2022/11/28/zalQMt.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="科学上网：X-UI面板"/></a><div class="content"><a class="title" href="/2022/11/28/SurfTheInternet/" title="科学上网：X-UI面板">科学上网：X-UI面板</a><time datetime="2022-11-28T03:25:09.000Z" title="发表于 2022-11-28 11:25:09">2022-11-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/10/21/ToBDesign/" title="B端产品设计必看"><img src="/images/ToBDesign/logo.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="B端产品设计必看"/></a><div class="content"><a class="title" href="/2022/10/21/ToBDesign/" title="B端产品设计必看">B端产品设计必看</a><time datetime="2022-10-21T05:42:08.000Z" title="发表于 2022-10-21 13:42:08">2022-10-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/10/20/Activatetheoffice/" title="「工具」软路由+KMS激活Windows+Microsoft Office"><img src="https://s1.ax1x.com/2022/10/20/xyj4eO.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="「工具」软路由+KMS激活Windows+Microsoft Office"/></a><div class="content"><a class="title" href="/2022/10/20/Activatetheoffice/" title="「工具」软路由+KMS激活Windows+Microsoft Office">「工具」软路由+KMS激活Windows+Microsoft Office</a><time datetime="2022-10-20T07:17:56.000Z" title="发表于 2022-10-20 15:17:56">2022-10-20</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2021/03/08/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%BB%BA%E5%8D%9A%E5%AE%A2/" title="从零开始建博客（Hexo+Butterfly）"><img class="post-bg" src="https://z3.ax1x.com/2021/07/13/WALeq1.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="从零开始建博客（Hexo+Butterfly）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/03/08/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%BB%BA%E5%8D%9A%E5%AE%A2/" title="从零开始建博客（Hexo+Butterfly）">从零开始建博客（Hexo+Butterfly）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-03-08T07:53:54.000Z" title="发表于 2021-03-08 15:53:54">2021-03-08</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-07-13T09:50:23.063Z" title="更新于 2021-07-13 17:50:23">2021-07-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Blog/">Blog</a></span></div><div class="content">前言：近来有些时间，总想丰富一下自己的博客空间，因此，从现在开始，我将把自己所学所掌握的知识，慢慢的都更新到博客上，供自己储备和开源给各位学习和指点，蟹蟹~✿✿ヽ(°▽°)ノ✿
+</div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/images/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Cookie</div><div class="author-info__description">请坐</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">25</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/hongzhi725"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Stay Hungry Stay Foolish</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/11/08/studyNotes/back-end%20development/API/" title="API"><img src="https://iph.href.lu/464x300?text=API&amp;fg=ffffff&amp;bg=165dff" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="API"/></a><div class="content"><a class="title" href="/2023/11/08/studyNotes/back-end%20development/API/" title="API">API</a><time datetime="2023-11-08T09:18:29.000Z" title="发表于 2023-11-08 17:18:29">2023-11-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/17/CreateBlogLikeMe/" title="博客搭建：Hexo + Butterfly"><img src="/images/CreateBlogLikeMe.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="博客搭建：Hexo + Butterfly"/></a><div class="content"><a class="title" href="/2023/05/17/CreateBlogLikeMe/" title="博客搭建：Hexo + Butterfly">博客搭建：Hexo + Butterfly</a><time datetime="2023-05-17T02:24:19.000Z" title="发表于 2023-05-17 10:24:19">2023-05-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/27/Switch-Emulator/" title="Switch Emulator"><img src="https://s1.ax1x.com/2023/04/27/p9M4cIx.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Switch Emulator"/></a><div class="content"><a class="title" href="/2023/04/27/Switch-Emulator/" title="Switch Emulator">Switch Emulator</a><time datetime="2023-04-27T02:09:24.000Z" title="发表于 2023-04-27 10:09:24">2023-04-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/11/28/SurfTheInternet/" title="科学上网：X-UI面板"><img src="https://s1.ax1x.com/2022/11/28/zalQMt.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="科学上网：X-UI面板"/></a><div class="content"><a class="title" href="/2022/11/28/SurfTheInternet/" title="科学上网：X-UI面板">科学上网：X-UI面板</a><time datetime="2022-11-28T03:25:09.000Z" title="发表于 2022-11-28 11:25:09">2022-11-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/10/21/ToBDesign/" title="B端产品设计必看"><img src="/images/ToBDesign/logo.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="B端产品设计必看"/></a><div class="content"><a class="title" href="/2022/10/21/ToBDesign/" title="B端产品设计必看">B端产品设计必看</a><time datetime="2022-10-21T05:42:08.000Z" title="发表于 2022-10-21 13:42:08">2022-10-21</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
             <i class="fas fa-folder-open"></i>
             <span>分类</span>
             
             </div>
             <ul class="card-category-list" id="aside-cat-list">
-            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Blog/"><span class="card-category-list-name">Blog</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Games/"><span class="card-category-list-name">Games</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E4%BA%A7%E5%93%81/"><span class="card-category-list-name">产品</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%B8%B8%E6%88%8F/"><span class="card-category-list-name">游戏</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E7%A7%91%E5%AD%A6/"><span class="card-category-list-name">科学</span><span class="card-category-list-count">2</span></a></li>
-            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/Axure/" style="font-size: 1.1em; color: #999">Axure</a> <a href="/tags/Switch/" style="font-size: 1.1em; color: #999">Switch</a> <a href="/tags/%E8%A7%86%E8%A7%89%E8%AE%BE%E8%AE%A1/" style="font-size: 1.1em; color: #999">视觉设计</a> <a href="/tags/ToB/" style="font-size: 1.1em; color: #999">ToB</a> <a href="/tags/%E6%A2%A6%E6%83%B3/" style="font-size: 1.1em; color: #999">梦想</a> <a href="/tags/%E6%BF%80%E6%B4%BB/" style="font-size: 1.1em; color: #999">激活</a> <a href="/tags/B%E7%AB%AF/" style="font-size: 1.1em; color: #999">B端</a> <a href="/tags/%E5%85%83%E4%BB%B6%E5%BA%93/" style="font-size: 1.1em; color: #999">元件库</a> <a href="/tags/Hexo/" style="font-size: 1.5em; color: #99a9bf">Hexo</a> <a href="/tags/Emulator/" style="font-size: 1.1em; color: #999">Emulator</a> <a href="/tags/%E6%B8%B8%E6%88%8F%E5%88%B6%E4%BD%9C/" style="font-size: 1.1em; color: #999">游戏制作</a> <a href="/tags/Games/" style="font-size: 1.1em; color: #999">Games</a> <a href="/tags/%E6%B5%B7%E5%A4%96/" style="font-size: 1.1em; color: #999">海外</a> <a href="/tags/Nintento/" style="font-size: 1.1em; color: #999">Nintento</a> <a href="/tags/Roadmap/" style="font-size: 1.1em; color: #999">Roadmap</a> <a href="/tags/%E6%B8%B8%E6%88%8F/" style="font-size: 1.1em; color: #999">游戏</a> <a href="/tags/%E4%BA%A7%E5%93%81%E8%AE%BE%E8%AE%A1/" style="font-size: 1.5em; color: #99a9bf">产品设计</a> <a href="/tags/%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/" style="font-size: 1.1em; color: #999">科学上网</a> <a href="/tags/%E7%A7%91%E6%8A%80/" style="font-size: 1.1em; color: #999">科技</a> <a href="/tags/Blog/" style="font-size: 1.1em; color: #999">Blog</a> <a href="/tags/office/" style="font-size: 1.1em; color: #999">office</a> <a href="/tags/Butterfly/" style="font-size: 1.1em; color: #999">Butterfly</a> <a href="/tags/%E8%BD%AF%E4%BB%B6/" style="font-size: 1.1em; color: #999">软件</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/05/"><span class="card-archive-list-date">五月 2023</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/04/"><span class="card-archive-list-date">四月 2023</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/11/"><span class="card-archive-list-date">十一月 2022</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/10/"><span class="card-archive-list-date">十月 2022</span><span class="card-archive-list-count">2</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/08/"><span class="card-archive-list-date">八月 2021</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/07/"><span class="card-archive-list-date">七月 2021</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/03/"><span class="card-archive-list-date">三月 2021</span><span class="card-archive-list-count">1</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">8</div></div><div class="webinfo-item"><div class="item-name">已运行时间 :</div><div class="item-count" id="runtimeshow" data-publishDate="2015-06-30T16:00:00.000Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">2.9k</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2023-08-15T08:26:08.703Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://i.loli.net/2021/03/05/sZVijBAeCxFqDPl.jpg')"><div id="footer-wrap"><div class="copyright">&copy;1992 - 2023 By Cookie</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><script>window.typedJSFn = {
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Blog/"><span class="card-category-list-name">Blog</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Games/"><span class="card-category-list-name">Games</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Study-Notes/"><span class="card-category-list-name">Study Notes</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E4%BA%A7%E5%93%81/"><span class="card-category-list-name">产品</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%B8%B8%E6%88%8F/"><span class="card-category-list-name">游戏</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E7%A7%91%E5%AD%A6/"><span class="card-category-list-name">科学</span><span class="card-category-list-count">2</span></a></li>
+            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/office/" style="font-size: 1.1em; color: #999">office</a> <a href="/tags/Hexo/" style="font-size: 1.5em; color: #99a9bf">Hexo</a> <a href="/tags/%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/" style="font-size: 1.1em; color: #999">科学上网</a> <a href="/tags/%E6%B8%B8%E6%88%8F/" style="font-size: 1.1em; color: #999">游戏</a> <a href="/tags/Blog/" style="font-size: 1.1em; color: #999">Blog</a> <a href="/tags/%E6%BF%80%E6%B4%BB/" style="font-size: 1.1em; color: #999">激活</a> <a href="/tags/%E5%85%83%E4%BB%B6%E5%BA%93/" style="font-size: 1.1em; color: #999">元件库</a> <a href="/tags/Games/" style="font-size: 1.1em; color: #999">Games</a> <a href="/tags/%E8%A7%86%E8%A7%89%E8%AE%BE%E8%AE%A1/" style="font-size: 1.1em; color: #999">视觉设计</a> <a href="/tags/Axure/" style="font-size: 1.1em; color: #999">Axure</a> <a href="/tags/%E6%B5%B7%E5%A4%96/" style="font-size: 1.1em; color: #999">海外</a> <a href="/tags/Develop/" style="font-size: 1.1em; color: #999">Develop</a> <a href="/tags/Switch/" style="font-size: 1.1em; color: #999">Switch</a> <a href="/tags/%E4%BA%A7%E5%93%81%E8%AE%BE%E8%AE%A1/" style="font-size: 1.5em; color: #99a9bf">产品设计</a> <a href="/tags/Nintento/" style="font-size: 1.1em; color: #999">Nintento</a> <a href="/tags/%E7%A7%91%E6%8A%80/" style="font-size: 1.1em; color: #999">科技</a> <a href="/tags/Emulator/" style="font-size: 1.1em; color: #999">Emulator</a> <a href="/tags/ToB/" style="font-size: 1.1em; color: #999">ToB</a> <a href="/tags/Roadmap/" style="font-size: 1.1em; color: #999">Roadmap</a> <a href="/tags/%E6%B8%B8%E6%88%8F%E5%88%B6%E4%BD%9C/" style="font-size: 1.1em; color: #999">游戏制作</a> <a href="/tags/%E8%BD%AF%E4%BB%B6/" style="font-size: 1.1em; color: #999">软件</a> <a href="/tags/Back-End/" style="font-size: 1.1em; color: #999">Back-End</a> <a href="/tags/%E6%A2%A6%E6%83%B3/" style="font-size: 1.1em; color: #999">梦想</a> <a href="/tags/Butterfly/" style="font-size: 1.1em; color: #999">Butterfly</a> <a href="/tags/B%E7%AB%AF/" style="font-size: 1.1em; color: #999">B端</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/11/"><span class="card-archive-list-date">十一月 2023</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/05/"><span class="card-archive-list-date">五月 2023</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/04/"><span class="card-archive-list-date">四月 2023</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/11/"><span class="card-archive-list-date">十一月 2022</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/10/"><span class="card-archive-list-date">十月 2022</span><span class="card-archive-list-count">2</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/08/"><span class="card-archive-list-date">八月 2021</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/07/"><span class="card-archive-list-date">七月 2021</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/03/"><span class="card-archive-list-date">三月 2021</span><span class="card-archive-list-count">1</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">9</div></div><div class="webinfo-item"><div class="item-name">已运行时间 :</div><div class="item-count" id="runtimeshow" data-publishDate="2015-06-30T16:00:00.000Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">3.1k</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2023-11-20T06:57:55.248Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://i.loli.net/2021/03/05/sZVijBAeCxFqDPl.jpg')"><div id="footer-wrap"><div class="copyright">&copy;1992 - 2023 By Cookie</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><script>window.typedJSFn = {
   init: (str) => {
     window.typed = new Typed('#subtitle', Object.assign({
       strings: str,
@@ -331,10 +366,10 @@ typedJSFn.run(subtitleType)
     window.loadMermaid ? runMermaid() : getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
   }
 
-  btf.addModeChange('mermaid', runMermaid)
+  btf.addGlobalFn('themeChange', runMermaid, 'mermaid')
 
   window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
-})()</script></div><div class="aplayer no-destroy" data-id="5246724163" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="auto" data-autoplay="true" muted></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="Happy,Birthday,Super 33" data-fontsize="15px" data-random="false" async="async"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+})()</script></div><div class="aplayer no-destroy" data-id="5246724163" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="auto" data-autoplay="true" muted></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
 
 var pjax = new Pjax({
   elements: 'a:not([target="_blank"])',
@@ -346,11 +381,11 @@ var pjax = new Pjax({
 
 document.addEventListener('pjax:send', function () {
 
-  // removeEventListener scroll 
-  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
-  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
 
-  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  document.getElementById('rightside').classList.remove('rightside-show')
   
   if (window.aplayers) {
     for (let i = 0; i < window.aplayers.length; i++) {
@@ -396,7 +431,7 @@ document.addEventListener('pjax:complete', function () {
   typeof Prism === 'object' && Prism.highlightAll()
 })
 
-document.addEventListener('pjax:error', (e) => {
+document.addEventListener('pjax:error', e => {
   if (e.request.status === 404) {
     pjax.loadUrl('/404.html')
   }
